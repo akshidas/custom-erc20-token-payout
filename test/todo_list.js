@@ -28,7 +28,7 @@ contract("TodoList", async function([primary]) {
     const token = await Token.deployed()
 
     await token.approve(todo.address, 10);
-    var date = new Date("07/14/2024 16:00:00"); // some mock date
+    var date = new Date("07/14/2024 15:00:00");
 
     await todoList.addTask('This is my first Task', date.getTime() / 1000);
     const taskLength = await todoList.getTaskLength()
@@ -49,7 +49,13 @@ contract("TodoList", async function([primary]) {
     const balance = await token.balanceOf(primary)
     assert.strictEqual(balance.toString(), '90', 'Transferred Amount is not correct')
   })
-  // it('Failed to remove task', async function() {
+
+  it('Reward calculated', async function() {
+    const todo = await TodoList.deployed()
+    const reward = (await todo.markComplete.call(0))
+    console.log(await reward.toString())
+    // assert.strictEqual(1, 1, 'test')
+  }) // it('Failed to remove task', async function() {
   //   const todo = await TodoList.deployed()
   //   const taskLength = await todo.getTaskLength()
   //   console.log(taskLength.toString())

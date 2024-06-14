@@ -53,10 +53,6 @@ contract TodoList is ITodoList {
     }
 
     function getTaskLength() public view returns(uint) {
-    	/*Task[] memory _tasks = users[msg.sender];*/
-
-   		/*uint length = users[msg.sender].length;*/
-
     	return users[msg.sender].length;
     }
 
@@ -98,22 +94,22 @@ contract TodoList is ITodoList {
             emit Removed(_id, "Task removed");
         }
         */
+    function getPercentageOfTimeElapsed(uint256 startTime, uint256 endTime) private view  returns(uint256) {
+    	uint256 currentTime = block.timestamp;
+     	uint256 totalTime = endTime - startTime;
+      	uint256 elapsedTimeFromStartTime = currentTime - startTime;
+	    uint256 percentageOfTimeElapsed = (elapsedTimeFromStartTime / totalTime) * 100;
+		return percentageOfTimeElapsed;
+    }
 
-    function markComplete(uint index) public {
-    Task[] storage _tasks = users[msg.sender];
-   	require(index < _tasks.length, "Index Overshot");
-
-    Task storage task = _tasks[index];
-    emit Toggling(task.id, task.content, task.completed);
-    task.completed = !task.completed;
-    emit Toggled(task.id, task.content, task.completed);
-
-    /*if (taskExists(_id)) {
-            Task storage task = tasks[_id];
-            emit Toggling(task.id, task.content, task.completed);
-            task.completed = !task.completed;
-            emit Toggled(task.id, task.content, task.completed);
-        }*/
+    function markComplete(uint index) public returns(uint256) {
+	   	require(index < getTaskLength(), "Index Overshot");
+	    Task memory task = getTask(index);
+		return getPercentageOfTimeElapsed(task.startTime, task.endTime);
+/*
+	    emit Toggling(task.id, task.content, task.completed);
+	    task.completed = !task.completed;
+	    emit Toggled(task.id, task.content, task.completed);*/
     }
 
     function taskExists(uint _id) private view returns (bool) {
